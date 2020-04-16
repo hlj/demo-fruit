@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My favorite fruit</title>
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+    <style type="text/css">
+    .min-img {
+      width: 180px;
+      height: 180px;
+      display: block;
+    }
+
+    li {
+      list-style-type: none;
+      display: inline;
+      margin-left: 10px;
+    }
+
+    .fruit {
+      text-align: center;
+      width: 200px;
+      height: auto;
+      border:  solid 1px grey;
+      display: inline-block;
+      padding: 8px;
+    }
+    </style>
+
+    <script type="text/javascript">
+    function render(data) {
+      var lists = [];
+      for (let i = 0; i < data.length; i++) {
+        const f = data[i];
+        let div = $('<div class="fruit">');
+        div.append($("<img>").attr('src', f.url).addClass('min-img'));
+        div.append(f.name);
+        lists.push($('<li>').append(div));
+      }
+      $('ul').empty().append(lists);
+    }
+
+    $(function(){
+      $.get('/list').done(
+        function(data) {
+          render(data);
+        }
+      );
+
+      $("#add-form").on('submit', function(e){
+        let name = $('#name').val();
+        let url = $('#url').val();
+        $.post('/add', { url: url, name: name })
+          .done(function(data) {
+            render(data);
+          });
+        e.preventDefault();
+      });
+    });
+    </script>
+  </head>
+  <body>
+    <h1>我喜爱的水果</h1>
+    <ul>
+    </ul>
+    <div>
+      <form action="#" id="add-form">
+        <label for="name">名称</label>
+        <input type="text" name="name" id="name"></input>
+        <label for="url">图片地址</label>
+        <input type="text" name="url" id="url"></input>
+        <button type="submit" id="add">增加</button>
+      </form>
+    </div>
+  </body>
+</html>
+
+
